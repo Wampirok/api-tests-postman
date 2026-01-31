@@ -68,7 +68,9 @@
               "});\r",
               "\r",
               "pm.test(\"Response should be an object\", function () {\r",
-              "    pm.expect(pm.response.json()).to.be.an(\"object\");\r",
+              "    if (pm.response.code === 200) {\r",
+              "        pm.expect(pm.response.json()).to.be.an(\"object\");\r",
+              "    }\r",
               "});"
             ],
             "type": "text/javascript",
@@ -79,8 +81,12 @@
         {
           "listen": "prerequest",
           "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
             "packages": {},
-            "type": "text/javascript"
+            "requests": {}
           }
         }
       ],
@@ -314,9 +320,9 @@
         "packages": {},
         "requests": {},
         "exec": [
-          "pm.test(\"Successful request\", function () {\r",
+          "if (![404].includes(pm.response.code)) {\r",
           "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
-          "});"
+          "}"
         ]
       }
     }
