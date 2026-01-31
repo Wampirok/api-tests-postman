@@ -1,0 +1,342 @@
+{
+  "info": {
+    "_postman_id": "952544f1-a3d7-49b9-a53f-aeb0309521e5",
+    "name": "Posts API Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "51938221"
+  },
+  "item": [
+    {
+      "name": "GET All posts",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Your test name\", function () {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData[0].views).to.eql(100);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response time should be below 500ms\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response should be an array\", function () {\r",
+              "    pm.expect(pm.response.json()).to.be.an(\"array\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://{{host}}:3000/posts",
+          "protocol": "http",
+          "host": [
+            "{{host}}"
+          ],
+          "port": "3000",
+          "path": [
+            "posts"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET Single post by ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"check title\", function () {\r",
+              "    pm.expect(pm.response.text()).to.include(\"a title\");\r",
+              "});\r",
+              "pm.test(\"check title value\", function () {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.title).to.eql(\"a title\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response time should be below 500ms\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response should be an object\", function () {\r",
+              "    pm.expect(pm.response.json()).to.be.an(\"object\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://{{host}}:3000/posts/1",
+          "protocol": "http",
+          "host": [
+            "{{host}}"
+          ],
+          "port": "3000",
+          "path": [
+            "posts",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST Create new post",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "\r",
+              "\r",
+              "\r",
+              "pm.test(\"check title\", function () {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.title).to.eql(pm.environment.get(\"title\"));\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Check views\", function () {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.views).to.eql(Number(pm.environment.get(\"ranodmViews\")));\r",
+              "});\r",
+              "\r",
+              "const jsonData = pm.response.json();\r",
+              "\r",
+              "// Save post ID for further requests\r",
+              "pm.environment.set(\"postId\", jsonData.id);\r",
+              "\r",
+              "pm.test(\"Created post should contain id\", function () {\r",
+              "    pm.expect(pm.response.json()).to.have.property(\"id\");\r",
+              "});\r",
+              "\r",
+              "\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "\r",
+              "\r",
+              "pm.environment.set(\"ranodmViews\", pm.variables.replaceIn('{{$randomInt}}'));"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": " {\r\n   \r\n        \"title\": \"{{title}}\",\r\n        \"views\": {{ranodmViews}}\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://{{host}}:3000/posts",
+          "protocol": "http",
+          "host": [
+            "{{host}}"
+          ],
+          "port": "3000",
+          "path": [
+            "posts"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "PUT Update post",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Title should be updated\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.title).to.eql(\"json-server3\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": " {\r\n   \r\n        \"title\": \"json-server3\",\r\n        \"views\": 20012\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://{{host}}:3000/posts/{{postId}}",
+          "protocol": "http",
+          "host": [
+            "{{host}}"
+          ],
+          "port": "3000",
+          "path": [
+            "posts",
+            "{{postId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "PATCH Update post fields",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Title should be updated\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.title).to.eql(\"json-server5\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": " {\r\n   \r\n        \"title\": \"json-server5\"\r\n      \r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://{{host}}:3000/posts/{{postId}}",
+          "protocol": "http",
+          "host": [
+            "{{host}}"
+          ],
+          "port": "3000",
+          "path": [
+            "posts",
+            "{{postId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DELETE Post",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Should return status code 200 or 204\", function () {\r",
+              "    pm.expect([200, 204]).to.include(pm.response.code);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://{{host}}:3000/posts/{{postId}}",
+          "protocol": "http",
+          "host": [
+            "{{host}}"
+          ],
+          "port": "3000",
+          "path": [
+            "posts",
+            "{{postId}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          "pm.test(\"Successful  request\", function () {\r",
+          "    pm.expect(pm.response.code).to.be.oneOf([200,201, 202]);\r",
+          "});"
+        ]
+      }
+    }
+  ]
+}
